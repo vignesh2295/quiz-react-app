@@ -11,8 +11,8 @@ import { IDropdownOption } from "@fluentui/react";
 import { update, get } from "@microsoft/sp-lodash-subset";
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import * as strings from "QuizAppWebPartStrings";
-import QuizApp from "./components/QuizApp";
-import { IQuizAppProps } from "./components/IQuizAppProps";
+import QuizHome from "./components/QuizHome";
+import { IQuizHomeProps } from "./components/IQuizAppProps";
 import "bootstrap/dist/css/bootstrap.css";
 export interface IQuizAppWebPartProps {
   description: string;
@@ -24,8 +24,8 @@ export default class QuizAppWebPart extends BaseClientSideWebPart<IQuizAppWebPar
   //private _environmentMessage: string = "";
 
   public render(): void {
-    const element: React.ReactElement<IQuizAppProps> = React.createElement(
-      QuizApp,
+    const element: React.ReactElement<IQuizHomeProps> = React.createElement(
+      QuizHome,
       {
         description: this.properties.description,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,

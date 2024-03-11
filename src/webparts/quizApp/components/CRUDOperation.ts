@@ -1,9 +1,40 @@
-import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
+import {
+  SPHttpClient,
+  SPHttpClientResponse,
+  HttpClient,
+  HttpClientResponse,
+  // IHttpClientOptions,
+} from "@microsoft/sp-http";
 export default class CRUDOperation {
   public _targetURL: string;
   public _dataBody: string;
   public _spHttpClient: SPHttpClient;
+  public _httpClient: HttpClient;
 
+  public getDataFromExternalAPI(): Promise<any> {
+    // const externalHeader: Headers = new Headers();
+    // externalHeader.append("Content-type", "application/json");
+    // externalHeader.append("accept", "application/json");
+    // const httpClientOptions: IHttpClientOptions = {
+    //   headers: new Headers(),
+    //   method: "GET",
+    //   mode: "cors",
+    // };
+    return this._httpClient
+      .get(this._targetURL, HttpClient.configurations.v1, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+      })
+      .then((response: HttpClientResponse) => {
+        return response.json();
+      })
+      .then((jsonResponse) => {
+        return jsonResponse;
+      }) as Promise<any>;
+  }
   public getItems(): Promise<any> {
     let status: boolean;
     const choiceRequest = this._targetURL.indexOf("/fields") !== -1;

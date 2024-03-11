@@ -41,4 +41,5 @@ export interface IQuizAppState {
   hobbiesOptions: IComboBoxOption[];
   //QuizQuestions
   quizQuestionsGroup: IQuizQuestion[];
+  timeZoneOption: IComboBoxOption[];
 }

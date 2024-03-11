@@ -12,7 +12,7 @@ export default class QuizPageHeader extends React.Component<IHeaderProps, {}> {
   }
   public render(): React.ReactElement<IHeaderProps> {
     return (
-      <header id="QuizAppHeader" className="py-2 mb-2 border-bottom">
+      <header id="QuizAppHeader" className="py-2 border-bottom">
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-8 col-md-8 col-sm-12 QuizAppHeaderTitle">
@@ -26,7 +26,7 @@ export default class QuizPageHeader extends React.Component<IHeaderProps, {}> {
                   width="50"
                   height="50"
                 />
-                <span className="ml-2">Quiz App</span>
+                <span className="ml-2">QUIZ Master</span>
               </a>
             </div>
             <div className="col-lg-4 col-md-4 col-sm-12 QuizAppHeaderUser">

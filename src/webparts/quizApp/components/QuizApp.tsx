@@ -1,6 +1,7 @@
 import * as React from "react";
 import type { IQuizAppProps } from "./IQuizAppProps";
 import type { IQuizAppState, IQuizQuestion } from "./IQuizAppState";
+import { FaHome } from "react-icons/fa";
 import {
   TextField,
   DatePicker,
@@ -20,9 +21,10 @@ import * as $ from "jquery";
 import CRUDOperation from "./CRUDOperation";
 import { country_arr, s_a } from "./countries";
 require("../components/loader.css");
-require("../components/countries");
-require("../../../../node_modules/bootstrap/dist/js/bootstrap.min.js");
-
+const pattern = {
+  _phone: new RegExp(/^\d{1,10}$/),
+  _email: new RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i),
+};
 export default class QuizApp extends React.Component<
   IQuizAppProps,
   IQuizAppState
@@ -67,6 +69,7 @@ export default class QuizApp extends React.Component<
       genderOptions: [],
       hobbiesOptions: [],
       quizQuestionsGroup: [],
+      timeZoneOption: [],
     };
   }
   public render(): React.ReactElement<IQuizAppProps> {
@@ -157,615 +160,646 @@ export default class QuizApp extends React.Component<
         })
       : [];
     return (
-      <section id="QuizAppForm" className="my-4">
-        <div className="container">
-          <div className="card">
-            <div className="card-header">QUIZ Form</div>
-            <div className="card-body">
-              <div className="col-12">
-                <nav>
-                  <div
-                    className="nav nav-tabs nav-fill"
-                    id="nav-tab"
-                    role="tablist"
-                  >
-                    <a
-                      className="nav-item nav-link active"
-                      id="nav-BasicInfo-tab"
-                      data-toggle="tab"
-                      href="#nav-BasicInfo"
-                      role="tab"
-                      aria-controls="nav-BasicInfo"
-                      aria-selected="true"
-                      style={{ borderTopLeftRadius: "15px" }}
+      <div id="QuizFormMainDiv">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <a
+                href="#"
+                onClick={() => {
+                  this.props.onQuizExit();
+                }}
+              >
+                <FaHome />
+                <span className="mx-1">Home</span>
+              </a>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">
+              QUIZ Form
+            </li>
+          </ol>
+        </nav>
+        <section id="QuizAppForm" className="my-4">
+          <div className="container">
+            <div className="card">
+              <div className="card-header">QUIZ Form</div>
+              <div className="card-body">
+                <div className="col-12">
+                  <nav>
+                    <div
+                      className="nav nav-tabs nav-fill"
+                      id="nav-tab"
+                      role="tablist"
                     >
-                      Personal Details
-                    </a>
-                    <a
-                      className="nav-item nav-link"
-                      id="nav-Question-tab"
-                      data-toggle="tab"
-                      href="#nav-Question"
-                      role="tab"
-                      aria-controls="nav-Question"
-                      aria-selected="false"
-                      style={{ borderTopRightRadius: "15px" }}
-                    >
-                      Quiz Questions
-                    </a>
-                  </div>
-                </nav>
-                <div
-                  className="tab-content py-3 px-3 px-sm-0 rounded-bottom"
-                  id="nav-tabContent"
-                >
+                      <a
+                        className="nav-item nav-link active"
+                        id="nav-BasicInfo-tab"
+                        data-toggle="tab"
+                        href="#nav-BasicInfo"
+                        role="tab"
+                        aria-controls="nav-BasicInfo"
+                        aria-selected="true"
+                        style={{ borderTopLeftRadius: "15px" }}
+                      >
+                        Personal Details
+                      </a>
+                      <a
+                        className="nav-item nav-link"
+                        id="nav-Question-tab"
+                        data-toggle="tab"
+                        href="#nav-Question"
+                        role="tab"
+                        aria-controls="nav-Question"
+                        aria-selected="false"
+                        style={{ borderTopRightRadius: "15px" }}
+                      >
+                        Quiz Questions
+                      </a>
+                    </div>
+                  </nav>
                   <div
-                    className="tab-pane fade show active"
-                    id="nav-BasicInfo"
-                    role="tabpanel"
-                    aria-labelledby="nav-BasicInfo-tab"
+                    className="tab-content py-3 px-3 px-sm-0 rounded-bottom"
+                    id="nav-tabContent"
                   >
                     <div
-                      id="personalInfoForm"
-                      className="col-lg-12 col-md-12 col-sm-12 title"
+                      className="tab-pane fade show active"
+                      id="nav-BasicInfo"
+                      role="tabpanel"
+                      aria-labelledby="nav-BasicInfo-tab"
                     >
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              First Name
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                value={firstName}
-                                readOnly={responseSubmitted}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      firstName: value,
-                                      firstNameError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      firstName: "",
-                                      firstNameError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && firstNameError && (
-                                <p className="error-message">
-                                  Firt Name is mandatory
-                                </p>
-                              )}
+                      <div
+                        id="personalInfoForm"
+                        className="col-lg-12 col-md-12 col-sm-12 title"
+                      >
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                First Name
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  value={firstName}
+                                  readOnly={responseSubmitted}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      this.setState({
+                                        firstName: value,
+                                        firstNameError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        firstName: "",
+                                        firstNameError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && firstNameError && (
+                                  <p className="error-message">
+                                    Firt Name is mandatory
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Last Name
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  value={lastName}
+                                  readOnly={responseSubmitted}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      this.setState({
+                                        lastName: value,
+                                        lastNameError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        lastName: "",
+                                        lastNameError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && lastNameError && (
+                                  <p className="error-message">
+                                    Last Name is mandatory
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Last Name
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                value={lastName}
-                                readOnly={responseSubmitted}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      lastName: value,
-                                      lastNameError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      lastName: "",
-                                      lastNameError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && lastNameError && (
-                                <p className="error-message">
-                                  Last Name is mandatory
-                                </p>
-                              )}
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Email ID
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  value={emailId}
+                                  readOnly={responseSubmitted}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      this.setState({
+                                        emailId: value,
+                                        emailIdError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        emailId: "",
+                                        emailIdError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && emailIdError && (
+                                  <p className="error-message">
+                                    Please enter a valid Email Address
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Mobile Number
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  type="number"
+                                  readOnly={responseSubmitted}
+                                  value={mobileNumber?.toString()}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      if (value.trim().length < 11) {
+                                        this.setState({
+                                          mobileNumber: parseInt(value),
+                                          mobileNumberError: false,
+                                        });
+                                      } else {
+                                        event.preventDefault();
+                                      }
+                                    } else {
+                                      this.setState({
+                                        mobileNumber: null,
+                                        mobileNumberError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && mobileNumberError && (
+                                  <p className="error-message">
+                                    Please enter a valid Mobile Number.
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Email ID
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                value={emailId}
-                                readOnly={responseSubmitted}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      emailId: value,
-                                      emailIdError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      emailId: "",
-                                      emailIdError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && emailIdError && (
-                                <p className="error-message">
-                                  Please enter a valid Email Address
-                                </p>
-                              )}
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Date of Birth
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <DatePicker
+                                  disabled={responseSubmitted}
+                                  firstDayOfWeek={DayOfWeek.Sunday}
+                                  value={dateOfBirth}
+                                  placeholder="Select a date..."
+                                  ariaLabel="Select a date"
+                                  maxDate={new Date()}
+                                  onSelectDate={(selectedDate) => {
+                                    if (selectedDate) {
+                                      const age =
+                                        new Date().getFullYear() -
+                                        selectedDate.getFullYear();
+                                      this.setState({
+                                        dateOfBirth: selectedDate,
+                                        age,
+                                        dateOfBirthError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        dateOfBirth: undefined,
+                                        age: 0,
+                                        dateOfBirthError: true,
+                                      });
+                                    }
+                                  }}
+                                  strings={defaultDatePickerStrings}
+                                />
+                                {isError && dateOfBirthError && (
+                                  <p className="error-message">
+                                    Date of Birth is a mandatory field
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Age
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField readOnly value={age?.toString()} />
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Mobile Number
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                type="number"
-                                readOnly={responseSubmitted}
-                                value={mobileNumber?.toString()}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Gender{" "}
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7 quiz-choices">
+                                <ChoiceGroup
+                                  readOnly={responseSubmitted}
+                                  options={genderOptions}
+                                  selectedKey={gender}
+                                  onChange={(
+                                    event,
+                                    selectedOption: IChoiceGroupOption
+                                  ) => {
+                                    if (selectedOption) {
+                                      this.setState({
+                                        gender: selectedOption.key,
+                                        genderError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        gender: "",
+                                        genderError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && genderError && (
+                                  <p className="error-message">
+                                    Gender is a mandatory field
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Hobbies
+                              </label>
+                              <div className="col-sm-7">
+                                <ComboBox
+                                  disabled={responseSubmitted}
+                                  multiSelect
+                                  options={hobbiesOptions}
+                                  selectedKey={hobbiesSelected}
+                                  onChange={(
+                                    event: React.FormEvent<IComboBox>,
+                                    option?: IComboBoxOption,
+                                    index?: number,
+                                    value?: string
+                                  ): void => {
+                                    const newHobbies = option?.selected
+                                      ? [
+                                          ...hobbiesSelected,
+                                          option!.key as string,
+                                        ]
+                                      : hobbiesSelected.filter(
+                                          (k) => k !== option!.key
+                                        );
                                     this.setState({
-                                      mobileNumber: parseInt(value),
-                                      mobileNumberError: false,
+                                      hobbiesSelected: newHobbies,
                                     });
-                                  } else {
-                                    this.setState({
-                                      mobileNumber: null,
-                                      mobileNumberError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && mobileNumberError && (
-                                <p className="error-message">
-                                  Please enter a valid Mobile Number.
-                                </p>
-                              )}
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Date of Birth
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <DatePicker
-                                disabled={responseSubmitted}
-                                firstDayOfWeek={DayOfWeek.Sunday}
-                                value={dateOfBirth}
-                                placeholder="Select a date..."
-                                ariaLabel="Select a date"
-                                maxDate={new Date()}
-                                onSelectDate={(selectedDate) => {
-                                  if (selectedDate) {
-                                    const age =
-                                      new Date().getFullYear() -
-                                      selectedDate.getFullYear();
-                                    this.setState({
-                                      dateOfBirth: selectedDate,
-                                      age,
-                                      dateOfBirthError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      dateOfBirth: undefined,
-                                      age: 0,
-                                      dateOfBirthError: true,
-                                    });
-                                  }
-                                }}
-                                strings={defaultDatePickerStrings}
-                              />
-                              {isError && dateOfBirthError && (
-                                <p className="error-message">
-                                  Date of Birth is a mandatory field
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Age
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField readOnly value={age?.toString()} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Gender <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7 quiz-choices">
-                              <ChoiceGroup
-                                readOnly={responseSubmitted}
-                                options={genderOptions}
-                                selectedKey={gender}
-                                onChange={(
-                                  event,
-                                  selectedOption: IChoiceGroupOption
-                                ) => {
-                                  if (selectedOption) {
-                                    this.setState({
-                                      gender: selectedOption.key,
-                                      genderError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      gender: "",
-                                      genderError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && genderError && (
-                                <p className="error-message">
-                                  Gender is a mandatory field
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Hobbies
-                            </label>
-                            <div className="col-sm-7">
-                              <ComboBox
-                                disabled={responseSubmitted}
-                                multiSelect
-                                options={hobbiesOptions}
-                                selectedKey={hobbiesSelected}
-                                onChange={(
-                                  event: React.FormEvent<IComboBox>,
-                                  option?: IComboBoxOption,
-                                  index?: number,
-                                  value?: string
-                                ): void => {
-                                  const newHobbies = option?.selected
-                                    ? [
-                                        ...hobbiesSelected,
-                                        option!.key as string,
-                                      ]
-                                    : hobbiesSelected.filter(
-                                        (k) => k !== option!.key
-                                      );
+                        <div className="form-group row">
+                          <label className="col-sm-12 col-form-label">
+                            Address Line 1{" "}
+                            <span className="mandatory-fields">*</span>
+                          </label>
+                          <div className="col-sm-12">
+                            <TextField
+                              readOnly={responseSubmitted}
+                              multiline
+                              rows={3}
+                              value={addressLine1}
+                              onChange={(event, value) => {
+                                if (value?.trim()) {
                                   this.setState({
-                                    hobbiesSelected: newHobbies,
+                                    addressLine1: value,
+                                    addressLine1Error: false,
                                   });
-                                }}
-                              />
+                                } else {
+                                  this.setState({
+                                    addressLine1: "",
+                                    addressLine1Error: true,
+                                  });
+                                }
+                              }}
+                            />
+                            {isError && addressLine1Error && (
+                              <p className="error-message">
+                                Address is a mandatory field
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Country
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <ComboBox
+                                  disabled={responseSubmitted}
+                                  options={countryOptionsArray}
+                                  selectedKey={
+                                    country ? country.key : undefined
+                                  }
+                                  onChange={(
+                                    event: React.FormEvent<IComboBox>,
+                                    option?: IComboBoxOption,
+                                    index?: number,
+                                    value?: string
+                                  ): void => {
+                                    if (option) {
+                                      this.setState({
+                                        country: option,
+                                        countryError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        country: undefined,
+                                        countryError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && countryError && (
+                                  <p className="error-message">
+                                    Country is a mandatory field
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                State
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <ComboBox
+                                  disabled={responseSubmitted}
+                                  options={stateOptionsArray}
+                                  selectedKey={state ? state.key : undefined}
+                                  onChange={(
+                                    event: React.FormEvent<IComboBox>,
+                                    option?: IComboBoxOption,
+                                    index?: number,
+                                    value?: string
+                                  ): void => {
+                                    if (option) {
+                                      this.setState({
+                                        state: option,
+                                        stateError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        state: undefined,
+                                        stateError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && stateError && (
+                                  <p className="error-message">
+                                    State is a mandatory field
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                City
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  readOnly={responseSubmitted}
+                                  value={city}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      this.setState({
+                                        city: value,
+                                        cityError: false,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        city: "",
+                                        cityError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && cityError && (
+                                  <p className="error-message">
+                                    City is a mandatory field
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-12 col-sm-12">
+                            <div className="form-group row">
+                              <label className="col-sm-5 col-form-label">
+                                Pincode
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-7">
+                                <TextField
+                                  readOnly={responseSubmitted}
+                                  type="number"
+                                  value={pincode?.toString()}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      if (value.trim().length < 7) {
+                                        this.setState({
+                                          pincode: parseInt(value),
+                                          pincodeError: false,
+                                        });
+                                      } else {
+                                        event.preventDefault();
+                                      }
+                                    } else {
+                                      this.setState({
+                                        pincode: null,
+                                        pincodeError: true,
+                                      });
+                                    }
+                                  }}
+                                />
+                                {isError && pincodeError && (
+                                  <p className="error-message">
+                                    Please enter a valid Pincode.
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">
-                          Address Line 1{" "}
-                          <span className="mandatory-fields">*</span>
-                        </label>
-                        <div className="col-sm-9">
-                          <TextField
-                            readOnly={responseSubmitted}
-                            multiline
-                            rows={3}
-                            value={addressLine1}
-                            onChange={(event, value) => {
-                              if (value?.trim()) {
-                                this.setState({
-                                  addressLine1: value,
-                                  addressLine1Error: false,
-                                });
-                              } else {
-                                this.setState({
-                                  addressLine1: "",
-                                  addressLine1Error: true,
-                                });
-                              }
-                            }}
-                          />
-                          {isError && addressLine1Error && (
-                            <p className="error-message">
-                              Address is a mandatory field
-                            </p>
+                      <div
+                        id="personalInfoFormLoader"
+                        style={{ display: "none" }}
+                      >
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div className="loader12">
+                              <div className="loader-inner-1 box-1 box-red"></div>
+                              <div className="loader-inner-2 box-2 box-pink"></div>
+                              <div className="loader-inner-1 box-3 box-blue"></div>
+                              <div className="loader-inner-2 box-4 box-yellow"></div>
+                              <div className="loader-inner-1 box-5 box-peach"></div>
+                              <div className="loader-inner-2 box-6 box-pink"></div>
+                              <div className="loader-inner-1 box-7 box-green"></div>
+                              <div className="loader-inner-2 box-8 box-purple"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="tab-pane fade"
+                      id="nav-Question"
+                      role="tabpanel"
+                      aria-labelledby="nav-Question-tab"
+                    >
+                      <div
+                        id="quizQuestForm"
+                        className="col-lg-12 col-md-12 col-sm-12 title"
+                      >
+                        {quizQuestionsGroup.length > 0 && questElements}
+                        {responseSubmitted && (
+                          <>
+                            <div className="form-group row">
+                              <div className="col-12">
+                                <p className="result-summary">
+                                  Your score is :{" "}
+                                  <span>
+                                    {
+                                      quizQuestionsGroup.filter(
+                                        (x) => x.isCorrect
+                                      ).length
+                                    }{" "}
+                                    out of {quizQuestionsGroup.length}
+                                  </span>
+                                </p>
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-3 col-form-label">
+                                Feedback{" "}
+                                <span className="mandatory-fields">*</span>
+                              </label>
+                              <div className="col-sm-9">
+                                <TextField
+                                  multiline
+                                  rows={5}
+                                  value={this.state.feedback}
+                                  onChange={(event, value) => {
+                                    if (value?.trim()) {
+                                      this.setState({
+                                        feedback: value,
+                                      });
+                                    } else {
+                                      this.setState({
+                                        feedback: "",
+                                      });
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        <div id="submitButtonDiv" className="row my-3">
+                          {!responseSubmitted && (
+                            <div className="col-md-12">
+                              <PrimaryButton
+                                text="Submit"
+                                className="submit-button mx-2"
+                                onClick={() => {
+                                  this.submitResponse();
+                                }}
+                                allowDisabledFocus
+                              />
+                              <DefaultButton
+                                text="Cancel"
+                                className="cancel-button mx-2"
+                                onClick={() => {
+                                  this.clearResponse();
+                                }}
+                                allowDisabledFocus
+                              />
+                            </div>
+                          )}
+                          {responseSubmitted && (
+                            <div className="col-md-12">
+                              <PrimaryButton
+                                text="Submit Feedback"
+                                disabled={this.state.feedback === ""}
+                                className="submit-button mx-2"
+                                onClick={() => {
+                                  this.submitFeedback();
+                                }}
+                                allowDisabledFocus
+                              />
+                            </div>
                           )}
                         </div>
                       </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Country
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <ComboBox
-                                disabled={responseSubmitted}
-                                options={countryOptionsArray}
-                                selectedKey={country ? country.key : undefined}
-                                onChange={(
-                                  event: React.FormEvent<IComboBox>,
-                                  option?: IComboBoxOption,
-                                  index?: number,
-                                  value?: string
-                                ): void => {
-                                  if (option) {
-                                    this.setState({
-                                      country: option,
-                                      countryError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      country: undefined,
-                                      countryError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && countryError && (
-                                <p className="error-message">
-                                  Country is a mandatory field
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              State
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <ComboBox
-                                disabled={responseSubmitted}
-                                options={stateOptionsArray}
-                                selectedKey={state ? state.key : undefined}
-                                onChange={(
-                                  event: React.FormEvent<IComboBox>,
-                                  option?: IComboBoxOption,
-                                  index?: number,
-                                  value?: string
-                                ): void => {
-                                  if (option) {
-                                    this.setState({
-                                      state: option,
-                                      stateError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      state: undefined,
-                                      stateError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && stateError && (
-                                <p className="error-message">
-                                  State is a mandatory field
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              City
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                readOnly={responseSubmitted}
-                                value={city}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      city: value,
-                                      cityError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      city: "",
-                                      cityError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && cityError && (
-                                <p className="error-message">
-                                  City is a mandatory field
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-md-12 col-sm-12">
-                          <div className="form-group row">
-                            <label className="col-sm-5 col-form-label">
-                              Pincode
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-7">
-                              <TextField
-                                readOnly={responseSubmitted}
-                                type="number"
-                                value={pincode?.toString()}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      pincode: parseInt(value),
-                                      pincodeError: false,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      pincode: null,
-                                      pincodeError: true,
-                                    });
-                                  }
-                                }}
-                              />
-                              {isError && pincodeError && (
-                                <p className="error-message">
-                                  Please enter a valid Pincode.
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      id="personalInfoFormLoader"
-                      style={{ display: "none" }}
-                    >
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="loader12">
-                            <div className="loader-inner-1 box-1 box-red"></div>
-                            <div className="loader-inner-2 box-2 box-pink"></div>
-                            <div className="loader-inner-1 box-3 box-blue"></div>
-                            <div className="loader-inner-2 box-4 box-yellow"></div>
-                            <div className="loader-inner-1 box-5 box-peach"></div>
-                            <div className="loader-inner-2 box-6 box-pink"></div>
-                            <div className="loader-inner-1 box-7 box-green"></div>
-                            <div className="loader-inner-2 box-8 box-purple"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-Question"
-                    role="tabpanel"
-                    aria-labelledby="nav-Question-tab"
-                  >
-                    <div
-                      id="quizQuestForm"
-                      className="col-lg-12 col-md-12 col-sm-12 title"
-                    >
-                      {quizQuestionsGroup.length > 0 && questElements}
-                      {responseSubmitted && (
-                        <>
-                          <div className="form-group row">
-                            <div className="col-12">
-                              <p className="result-summary">
-                                Your score is :{" "}
-                                <span>
-                                  {
-                                    quizQuestionsGroup.filter(
-                                      (x) => x.isCorrect
-                                    ).length
-                                  }{" "}
-                                  out of {quizQuestionsGroup.length}
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="form-group row">
-                            <label className="col-sm-3 col-form-label">
-                              Feedback{" "}
-                              <span className="mandatory-fields">*</span>
-                            </label>
-                            <div className="col-sm-9">
-                              <TextField
-                                multiline
-                                rows={5}
-                                value={this.state.feedback}
-                                onChange={(event, value) => {
-                                  if (value?.trim()) {
-                                    this.setState({
-                                      feedback: value,
-                                    });
-                                  } else {
-                                    this.setState({
-                                      feedback: "",
-                                    });
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      <div id="submitButtonDiv" className="row my-3">
-                        {!responseSubmitted && (
+                      <div id="quizQuestFormLoader" style={{ display: "none" }}>
+                        <div className="row">
                           <div className="col-md-12">
-                            <PrimaryButton
-                              text="Submit"
-                              className="submit-button mx-2"
-                              onClick={() => {
-                                this.submitResponse();
-                              }}
-                              allowDisabledFocus
-                            />
-                            <DefaultButton
-                              text="Cancel"
-                              className="cancel-button mx-2"
-                              onClick={() => {
-                                this.clearResponse();
-                              }}
-                              allowDisabledFocus
-                            />
-                          </div>
-                        )}
-                        {responseSubmitted && (
-                          <div className="col-md-12">
-                            <PrimaryButton
-                              text="Submit Feedback"
-                              disabled={this.state.feedback === ""}
-                              className="submit-button mx-2"
-                              onClick={() => {
-                                this.submitFeedback();
-                              }}
-                              allowDisabledFocus
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div id="quizQuestFormLoader" style={{ display: "none" }}>
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="loader12">
-                            <div className="loader-inner-1 box-1 box-red"></div>
-                            <div className="loader-inner-2 box-2 box-pink"></div>
-                            <div className="loader-inner-1 box-3 box-blue"></div>
-                            <div className="loader-inner-2 box-4 box-yellow"></div>
-                            <div className="loader-inner-1 box-5 box-peach"></div>
-                            <div className="loader-inner-2 box-6 box-pink"></div>
-                            <div className="loader-inner-1 box-7 box-green"></div>
-                            <div className="loader-inner-2 box-8 box-purple"></div>
+                            <div className="loader12">
+                              <div className="loader-inner-1 box-1 box-red"></div>
+                              <div className="loader-inner-2 box-2 box-pink"></div>
+                              <div className="loader-inner-1 box-3 box-blue"></div>
+                              <div className="loader-inner-2 box-4 box-yellow"></div>
+                              <div className="loader-inner-1 box-5 box-peach"></div>
+                              <div className="loader-inner-2 box-6 box-pink"></div>
+                              <div className="loader-inner-1 box-7 box-green"></div>
+                              <div className="loader-inner-2 box-8 box-purple"></div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -775,8 +809,8 @@ export default class QuizApp extends React.Component<
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     );
   }
   public componentDidMount(): void {
@@ -830,6 +864,7 @@ export default class QuizApp extends React.Component<
                         isCorrect: false,
                       };
                     });
+
                   $("#personalInfoForm").show();
                   $("#personalInfoFormLoader").hide();
                   this.setState({
@@ -851,6 +886,7 @@ export default class QuizApp extends React.Component<
       }).then(() => {
         $("#personalInfoForm").show();
         $("#personalInfoFormLoader").hide();
+        this.props.onQuizExit();
       });
     }
   }
@@ -881,7 +917,7 @@ export default class QuizApp extends React.Component<
           validationObj.isError ||
           validationObj.firstNameError ||
           validationObj.lastNameError ||
-          validationObj.mailIdError ||
+          validationObj.emailIdError ||
           validationObj.mobileNumberError ||
           validationObj.dateOfBirthError ||
           validationObj.addressLine1Error ||
@@ -979,6 +1015,7 @@ export default class QuizApp extends React.Component<
       }).then(() => {
         $("#quizQuestForm").show();
         $("#quizQuestFormLoader").hide();
+        this.props.onQuizExit();
       });
     }
   }
@@ -996,8 +1033,6 @@ export default class QuizApp extends React.Component<
       pincode,
       gender,
     } = this.state;
-    const validateEmail =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     try {
       const inValidQuestResponse = this.state.quizQuestionsGroup.filter(
         (x) => !x.isValid
@@ -1006,8 +1041,10 @@ export default class QuizApp extends React.Component<
         isError: inValidQuestResponse.length !== 0,
         firstNameError: !firstName.trim() ? true : false,
         lastNameError: !lastName.trim() ? true : false,
-        emailIdError: !emailId.match(validateEmail),
-        mobileNumberError: !mobileNumber ? true : false,
+        emailIdError: !(emailId && pattern._email.test(emailId)),
+        mobileNumberError: !(
+          mobileNumber && pattern._phone.test(mobileNumber.toString())
+        ),
         dateOfBirthError: !dateOfBirth ? true : false,
         addressLine1Error: !addressLine1 ? true : false,
         cityError: !city ? true : false,
@@ -1024,6 +1061,7 @@ export default class QuizApp extends React.Component<
       }).then(() => {
         $("#quizQuestForm").show();
         $("#quizQuestFormLoader").hide();
+        this.props.onQuizExit();
       });
     }
   }
@@ -1101,7 +1139,7 @@ export default class QuizApp extends React.Component<
               `Your response saved successfully!`,
               "success"
             ).then(() => {
-              console.log("Feedback submitted");
+              this.props.onQuizExit();
             });
           } else {
             $("#MainProjectContainer").show();
@@ -1111,7 +1149,7 @@ export default class QuizApp extends React.Component<
               title: "Oops...",
               text: "Something went wrong! Please contact the administrator.",
             }).then(() => {
-              console.log("Feedback submission failed");
+              this.props.onQuizExit();
             });
           }
         });
@@ -1124,6 +1162,7 @@ export default class QuizApp extends React.Component<
       }).then(() => {
         $("#quizQuestForm").show();
         $("#quizQuestFormLoader").hide();
+        this.props.onQuizExit();
       });
     }
   }
