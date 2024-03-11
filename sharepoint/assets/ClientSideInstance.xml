@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="QuizPageHeaderFooter"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ComponentId="d0ddbeca-66fc-4841-b8dd-6fa9ac787433"
+        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </ClientSideComponentInstance>
+</Elements>

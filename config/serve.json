@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "initialPage": "https://t1n34.sharepoint.com/sites/InternalProjects/_layouts/workbench.aspx",
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://t1n34.sharepoint.com/sites/InternalProjects",
+      "customActions": {
+        "d0ddbeca-66fc-4841-b8dd-6fa9ac787433": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "quizPageHeaderFooter": {
+      "pageUrl": "https://t1n34.sharepoint.com/sites/InternalProjects",
+      "customActions": {
+        "d0ddbeca-66fc-4841-b8dd-6fa9ac787433": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "5e97b8af-acb2-4d83-b618-a92a29bcc1ea",
+  "alias": "QuizAppWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "supportsFullBleed": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": {
+        "default": "Advanced"
+      },
+      "title": {
+        "default": "Quiz App"
+      },
+      "description": {
+        "default": "Quiz App description"
+      },
+      "officeFabricIconFontName": "Page",
+      "properties": {
+        "description": "Quiz App",
+        "quizResponseList": "QuizResponses",
+        "quizQuestionsList": "QuizQuestions"
+      }
+    }
+  ]
+}

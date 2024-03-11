@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "quiz-app-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/quizApp/QuizAppWebPart.js",
+          "manifest": "./src/webparts/quizApp/QuizAppWebPart.manifest.json"
+        }
+      ]
+    },
+    "quiz-page-header-footer-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/quizPageHeaderFooter/QuizPageHeaderFooterApplicationCustomizer.js",
+          "manifest": "./src/extensions/quizPageHeaderFooter/QuizPageHeaderFooterApplicationCustomizer.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {
+    "jquery": {
+      "path": "node_modules/jquery/dist/jquery.min.js",
+      "globalName": "jQuery"
+    },
+    "bootstrap": {
+      "path": "node_modules/bootstrap/dist/js/bootstrap.min.js",
+      "globalName": "bootstrap"
+    }
+  },
+  "localizedResources": {
+    "QuizAppWebPartStrings": "lib/webparts/quizApp/loc/{locale}.js",
+    "QuizPageHeaderFooterApplicationCustomizerStrings": "lib/extensions/quizPageHeaderFooter/loc/{locale}.js"
+  }
+}

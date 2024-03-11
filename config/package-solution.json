@@ -1,0 +1,47 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "quiz-react-app-client-side-solution",
+    "id": "e7c77d7a-3f1d-421d-8e78-d8f49ba02cf6",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "quiz-react-app description"
+      },
+      "longDescription": {
+        "default": "quiz-react-app description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "quiz-react-app Feature",
+        "description": "The feature that activates elements of the quiz-react-app solution.",
+        "id": "6c8ab63d-39ee-4b63-872e-56849f621646",
+        "version": "1.0.0.0",
+        "assets": {
+          "elementManifests": [
+            "elements.xml",
+            "ClientSideInstance.xml"
+          ]
+        }
+      }
+    ]
+  },
+  
+  "paths": {
+    "zippedPackage": "solution/quiz-react-app.sppkg"
+  }
+}
