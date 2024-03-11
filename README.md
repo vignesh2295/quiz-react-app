@@ -52,17 +52,20 @@ Short summary on functionality and used technologies.
 
 ## Features
 
-Description of the extension that expands upon high-level summary above.
+## Screens : 
 
-This extension illustrates the following concepts:
+1. Quiz Master Home Page:
+![image](https://github.com/vignesh2295/quiz-react-app/assets/34911519/89483860-4360-4c4a-b7b7-09615bf5d9f4)
 
-- topic 1
-- topic 2
-- topic 3
+2. Quiz Form:
+![image](https://github.com/vignesh2295/quiz-react-app/assets/34911519/4ad90622-b073-4241-b700-6b4c71d64391)
+![image](https://github.com/vignesh2295/quiz-react-app/assets/34911519/21c52ece-499d-4a6c-a79b-e4b2a3e0f6f6)
 
-> Notice that better pictures and documentation will increase the sample usage and the value you are providing for others. Thanks for your submissions advance.
+## SharePoint Lists :
 
-> Share your web part with others through Microsoft 365 Patterns and Practices program to get visibility and exposure. More details on the community, open-source projects and other activities from http://aka.ms/m365pnp.
+1. Quiz Responses
+2. Quiz Questions
+
 
 ## References
 
