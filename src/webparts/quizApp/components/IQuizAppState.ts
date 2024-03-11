@@ -6,8 +6,10 @@ export interface IQuizQuestion {
   selectedAnswer: string | undefined;
   CorrectAnswer: string;
   isValid: boolean;
+  isCorrect: boolean;
 }
 export interface IQuizAppState {
+  feedback: string;
   responseSubmitted: boolean;
   responseID: number;
   isError: boolean;

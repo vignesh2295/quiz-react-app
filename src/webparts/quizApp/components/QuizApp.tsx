@@ -21,6 +21,7 @@ import CRUDOperation from "./CRUDOperation";
 import { country_arr, s_a } from "./countries";
 require("../components/loader.css");
 require("../components/countries");
+require("../../../../node_modules/bootstrap/dist/js/bootstrap.min.js");
 
 export default class QuizApp extends React.Component<
   IQuizAppProps,
@@ -35,6 +36,7 @@ export default class QuizApp extends React.Component<
     );
     this.state = {
       //fields
+      feedback: "",
       responseSubmitted: false,
       responseID: 0,
       isError: false,
@@ -121,6 +123,8 @@ export default class QuizApp extends React.Component<
                             ...t,
                             selectedAnswer: selectedOption.key,
                             isValid: true,
+                            isCorrect:
+                              selectedOption.key === quest.CorrectAnswer,
                           }
                         : t;
                     });
@@ -671,49 +675,83 @@ export default class QuizApp extends React.Component<
                       className="col-lg-12 col-md-12 col-sm-12 title"
                     >
                       {quizQuestionsGroup.length > 0 && questElements}
+                      {responseSubmitted && (
+                        <>
+                          <div className="form-group row">
+                            <div className="col-12">
+                              <p className="result-summary">
+                                Your score is :{" "}
+                                <span>
+                                  {
+                                    quizQuestionsGroup.filter(
+                                      (x) => x.isCorrect
+                                    ).length
+                                  }{" "}
+                                  out of {quizQuestionsGroup.length}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="form-group row">
+                            <label className="col-sm-3 col-form-label">
+                              Feedback{" "}
+                              <span className="mandatory-fields">*</span>
+                            </label>
+                            <div className="col-sm-9">
+                              <TextField
+                                multiline
+                                rows={5}
+                                value={this.state.feedback}
+                                onChange={(event, value) => {
+                                  if (value?.trim()) {
+                                    this.setState({
+                                      feedback: value,
+                                    });
+                                  } else {
+                                    this.setState({
+                                      feedback: "",
+                                    });
+                                  }
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <div id="submitButtonDiv" className="row my-3">
-                        <div
-                          className="col-md-12"
-                          style={
-                            responseSubmitted
-                              ? { display: "none" }
-                              : { display: "block" }
-                          }
-                        >
-                          <PrimaryButton
-                            text="Submit"
-                            className="submit-button mx-2"
-                            onClick={() => {
-                              this.submitResponse();
-                            }}
-                            allowDisabledFocus
-                          />
-                          <DefaultButton
-                            text="Cancel"
-                            className="cancel-button mx-2"
-                            onClick={() => {
-                              this.clearResponse();
-                            }}
-                            allowDisabledFocus
-                          />
-                        </div>
-                        <div
-                          className="col-md-12"
-                          style={
-                            responseSubmitted
-                              ? { display: "block" }
-                              : { display: "none" }
-                          }
-                        >
-                          <PrimaryButton
-                            text="Submit Feedback"
-                            className="submit-button mx-2"
-                            onClick={() => {
-                              console.log("Feedback");
-                            }}
-                            allowDisabledFocus
-                          />
-                        </div>
+                        {!responseSubmitted && (
+                          <div className="col-md-12">
+                            <PrimaryButton
+                              text="Submit"
+                              className="submit-button mx-2"
+                              onClick={() => {
+                                this.submitResponse();
+                              }}
+                              allowDisabledFocus
+                            />
+                            <DefaultButton
+                              text="Cancel"
+                              className="cancel-button mx-2"
+                              onClick={() => {
+                                this.clearResponse();
+                              }}
+                              allowDisabledFocus
+                            />
+                          </div>
+                        )}
+                        {responseSubmitted && (
+                          <div className="col-md-12">
+                            <PrimaryButton
+                              text="Submit Feedback"
+                              disabled={this.state.feedback === ""}
+                              className="submit-button mx-2"
+                              onClick={() => {
+                                this.submitFeedback();
+                              }}
+                              allowDisabledFocus
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div id="quizQuestFormLoader" style={{ display: "none" }}>
@@ -789,6 +827,7 @@ export default class QuizApp extends React.Component<
                         selectedAnswer: undefined,
                         CorrectAnswer: singleQuest.CorrectAnswer,
                         isValid: false,
+                        isCorrect: false,
                       };
                     });
                   $("#personalInfoForm").show();
@@ -1031,5 +1070,61 @@ export default class QuizApp extends React.Component<
         });
       }
     });
+  }
+  private submitFeedback(): void {
+    const { quizResponseList } = this.props;
+    const { feedback, quizQuestionsGroup } = this.state;
+    try {
+      if (feedback) {
+        let crudOperation: CRUDOperation = new CRUDOperation();
+        crudOperation._spHttpClient = this.props.spHttpClient;
+
+        let updateItemObj = {
+          __metadata: { type: "SP.Data.QuizResponsesListItem" },
+          Title: this.state.firstName,
+          Feedback: feedback,
+          Score: quizQuestionsGroup
+            .filter((x) => x.isCorrect)
+            .length.toString(),
+        };
+
+        crudOperation._targetURL = `${unescape(
+          this.props.siteUrl
+        )}/_api/web/lists/GetByTitle('${quizResponseList}')/items(${
+          this.state.responseID
+        })`;
+        crudOperation._dataBody = JSON.stringify(updateItemObj);
+        crudOperation.updateItem().then((response: any) => {
+          if (response.ok) {
+            Swal.fire(
+              "Success!",
+              `Your response saved successfully!`,
+              "success"
+            ).then(() => {
+              console.log("Feedback submitted");
+            });
+          } else {
+            $("#MainProjectContainer").show();
+            $("#projectFormLoader").hide();
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong! Please contact the administrator.",
+            }).then(() => {
+              console.log("Feedback submission failed");
+            });
+          }
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong! Please contact the administrator.",
+      }).then(() => {
+        $("#quizQuestForm").show();
+        $("#quizQuestFormLoader").hide();
+      });
+    }
   }
 }
